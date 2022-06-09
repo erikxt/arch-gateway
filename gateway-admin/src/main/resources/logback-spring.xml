@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--读取resources下指定的配置文件-->
+    <property resource="application.yml"/>
+    <!--读取配置文件的值，source为配置文件中的key-->
+    <springProperty scope="context" name="servername" source="spring.application.name"/>
+    <!--定义日志文件的存储地址，勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_HOME" value="/opt/logs"/>
+
+    <property name="CONSOLE_LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%-5level] [${servername}] [%thread] [%logger{50}:%L] %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成日志文件(具体按哪个时间维度生成日志文件的标准是下面配置的日期格式到什么级别) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--被写入的文件名，可以是相对目录，也可以是绝对目录，如果上级目录不存在，则自动创建-->
+        <File>${LOG_HOME}/${servername}.log</File>
+        <!--发生滚动时，文件移动和重命名，class定义的时具体的滚动策略类（当前时根据时间滚动——最常用）-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件按天输出的文件名-->
+            <FileNamePattern>${LOG_HOME}/${servername}.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数，超出时间，则会删除之前的旧文件,同时创建的目录也会被删除-->
+            <MaxHistory>7</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

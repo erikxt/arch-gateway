@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.gateway.admin.mapper.WhitelistMapper">
+
+    <resultMap id="BaseResultMap" type="cn.com.gateway.admin.domain.WhitelistDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="app_id" property="appId" jdbcType="VARCHAR"/>
+        <result column="uri" property="uri" jdbcType="VARCHAR"/>
+        <result column="is_available" property="available" jdbcType="TINYINT"/>
+        <result column="is_deleted" property="deleted" jdbcType="TINYINT"/>
+        <result column="creator" property="creator" jdbcType="VARCHAR"/>
+        <result column="modifier" property="modifier" jdbcType="VARCHAR"/>
+        <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, app_id, uri, is_available, is_deleted, creator, modifier, gmt_create, gmt_modified
+    </sql>
+
+    <insert id="insert">
+        insert into gw_whitelist(app_id, uri, creator) values (#{appId}, #{uri}, #{creator})
+    </insert>
+
+</mapper>

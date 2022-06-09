@@ -1,0 +1,81 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: cbim-gateway-admin
+  profiles:
+    # 默认激活local，其他环境由环境参数指定
+    active: local
+  cloud:
+    bus:
+      enabled: true
+      destination: gatewayBus
+    nacos:    # 命名空间来区分环境dev,test
+      discovery:
+        server-addr: ${NACOS_SERV_ADDR:10.81.3.49:8848}
+        namespace: ${spring.profiles.active}
+        group: DEFAULT_GROUP
+      config:
+        server-addr: ${NACOS_SERV_ADDR:10.81.3.49:8848}
+        namespace: ${spring.profiles.active}
+        group: DEFAULT_GROUP
+        file-extension: yml
+
+management:   # 不要修改以下参数
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      elastic:
+        index: micrometer-metrics
+        index-date-format: yyyy-MM
+        step: 30s  # Step size (i.e. reporting frequency) to use.
+    tags:
+      application: ${spring.application.name}
+      host: ${spring.cloud.client.ip-address}:${server.port}
+      env: ${spring.profiles.active}
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  cloud:
+    inetutils:
+      preferred-networks: ['10.']   # 绑定本地注册网卡
+    nacos:
+      config:
+        enabled: false    # local环境使用本地配置
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+

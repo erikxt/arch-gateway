@@ -1,0 +1,14 @@
+management:
+  metrics:
+    export:
+      elastic:
+        enabled: false
+        host: http://10.81.3.19:9200
+        user-name: elastic
+        password: elastic
+spring:
+  rabbitmq:
+    host: 10.81.3.50
+    port: 5672
+    username: admin
+    password: Cbim@2021
